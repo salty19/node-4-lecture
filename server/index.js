@@ -6,6 +6,7 @@ const session = require('express-session')
 const sessionCtrl = require('./controllers/sessionController')
 const authCtrl = require('./controllers/authController')
 const checkForSession = require('./middlewares/checkForSession')
+const authenticateUser = require('./middlewares/authenticateUser')
 const { SERVER_PORT, CONNECTION_STRING, SESSION_SECRET } = process.env
 
 app.use(express.json())
@@ -25,6 +26,11 @@ app.get('/session', sessionCtrl.checkSession)
 app.post('/auth/register', authCtrl.register)
 app.post('/auth/login', checkForSession, authCtrl.login)
 app.delete('/auth/logout', authCtrl.logout)
+
+//SECRET STUFF
+app.get('/api/secrets', authenticateUser, (req, res) => {
+  res.status(200).send('SECRETS ABOUND')
+})
 
 massive({
   connectionString: CONNECTION_STRING,
