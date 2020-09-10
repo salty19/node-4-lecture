@@ -3,6 +3,7 @@ const express = require('express')
 const massive = require('massive')
 const session = require('express-session')
 const authCtrl = require('./controllers/authController')
+import secretCtrl = require('./controllers/secretsController.js')
 
 
 const app = express()
@@ -23,6 +24,9 @@ app.post('/auth/register', authCtrl.register)
 app.post('/auth/login', authCtrl.login)
 app.delete('/auth/logout', authCtrl.logout)
 app.get('/session', authCtrl.getSession)
+
+app.get('/api/secrets/admin', secretCtrl.getAdminSecret)
+app.get('/api/secrets/normal', secretCtrl.getSecret)
 
 massive({
     connectionString: CONNECTION_STRING,

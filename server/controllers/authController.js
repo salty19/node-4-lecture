@@ -37,10 +37,10 @@ module.exports = {
     //TODO We need email and password
     //TODO See if the user exists
     //TODO If they don't exist, we reject their request
-    TODO Compare their password to the hash
-    TODO If there is a mismatch, we reject their request
-    TODO Set the user on session
-    TODO Send confirmation of login
+    //TODO Compare their password to the hash
+    //TODO If there is a mismatch, we reject their request
+    //TODO Set the user on session
+    //TODO Send confirmation of login
 */
         const {email, password} = req.body
         const db = req.app.get('db')
@@ -51,7 +51,28 @@ module.exports = {
         }
 
         const isAuthenticated = bcrypt.compareSync(password, existingUser[0].hash)
+
+        if(!isAuthenticated) {
+            return res.status(403).send('Email or password is incorrect')
+        }
+
+        delete existingUser[0].has
+
+        req.session.user = existingUser[0]
+        
+        res.status(200).send(req.session.user)
     },
-    logout: (req, res) => {},
-    getSession: (req, res) => {}
+
+    logout: (req, res) => {
+        req.session.destory()
+        res.sendStatus(200)
+    },
+
+    getSession: (req, res) => {
+        if(req.session.user) {
+            res.status(200).send(req.session.user)
+        } else {
+            res.status(404).send('No session found')
+        }
+    }
 }
